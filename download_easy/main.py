@@ -7,7 +7,28 @@ import time
 import socket
 
 class DownloadEasy(object):
-    def __init__(self, url):
+    """
+    For Downloading Big files without Interrupt
+
+    How to Use in Command Line *(Recommended)
+
+    pip install download-easy
+
+    download-easy https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4
+
+    why?
+        * Automatically Reconnect with internet and download remaining parts
+        * You can Resume whenever you want
+        for more check this link https://github.com/python-gare/download-easy
+
+    How to Use in Program:
+
+    obj1 = DownloadEasy(url)
+    obj1.file_check(out=out):
+    obj1.download_file(out=out)
+
+    """
+    def __init__(self, url:str) -> None:
         self.url = url
         self.file_name = self.url.split("/")[-1]
         self.resume_header = {'Range':f'bytes=0-'}
@@ -15,10 +36,11 @@ class DownloadEasy(object):
         self.total_size = int(self.r.headers.get('content-length'))
         self.initial_pos = 0
 
-    def file_check(self, out=os.getcwd()):
+    def file_check(self, out:'file_path'=os.getcwd())-> bool:
         try:
             self.resume_header = {'Range':f'bytes= {Path(os.path.join(out, self.file_name)).stat().st_size}-'}
-            self.total_size = int(self.r.headers.get('content-length')) - Path(os.path.join(out, self.file_name)).stat().st_size
+            self.total_size = int(self.r.headers.get('content-length')) - Path(os.path.join(out, self.file_name))\
+                                                                                        .stat().st_size
             self.r = requests.get(self.url, stream=True, headers=self.resume_header, timeout=5)
             return True
         except:
@@ -27,7 +49,7 @@ class DownloadEasy(object):
     def url_validate_check(self):
         pass
 
-    def download_file(self, out=os.getcwd()):
+    def download_file(self, out:"file_path"=os.getcwd()) -> None:
         with open (os.path.join(out, self.file_name),'ab') as f:
             with tqdm(total=self.total_size, unit='B', unit_scale=True,desc=self.file_name,
                 initial=self.initial_pos, ascii=True) as pbar:
@@ -39,6 +61,9 @@ class DownloadEasy(object):
 
 
 def checkInternetSocket(host="8.8.8.8", port=53, timeout=3):
+    """
+    For Internet Check
+    """
     try:
         socket.setdefaulttimeout(timeout)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
