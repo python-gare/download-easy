@@ -1,0 +1,10 @@
+README.md
+setup.py
+Download_Easy.egg-info/PKG-INFO
+Download_Easy.egg-info/SOURCES.txt
+Download_Easy.egg-info/dependency_links.txt
+Download_Easy.egg-info/entry_points.txt
+Download_Easy.egg-info/requires.txt
+Download_Easy.egg-info/top_level.txt
+download_easy/__init__.py
+download_easy/main.py
